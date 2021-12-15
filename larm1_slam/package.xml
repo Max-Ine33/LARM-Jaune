@@ -4,15 +4,7 @@
   <version>0.0.0</version>
   <description>The larm1_slam package</description>
 
-  <!-- One maintainer tag required, multiple allowed, one person per tag -->
-  <!-- Example:  -->
-  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-<<<<<<< HEAD
-  <maintainer email="maxine.gravier@todo.todo">maxine.gravier</maintainer>
-=======
-  <maintainer email="fabien.plouvier@todo.todo">fabien.plouvier</maintainer>
->>>>>>> bcbf1079cf2c859dabfede0367d9ec14b6805337
-
+   <maintainer email="fabien.plouvier@todo.todo">fabien.plouvier</maintainer>
 
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
@@ -53,8 +45,7 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-<<<<<<< HEAD
-=======
+
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
@@ -64,7 +55,6 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
->>>>>>> bcbf1079cf2c859dabfede0367d9ec14b6805337
 
 
   <!-- The export tag contains other, unspecified, tags -->
