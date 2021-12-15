@@ -1,4 +1,0 @@
-<launch>
-<node pkg="stage_ros" type="stage_ros" name="$(rospack find stage_ros)/world/willow-erratic.world"  output="screen">
-<param name="/use_sim_time" value="true">
-</launch>
