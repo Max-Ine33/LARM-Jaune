@@ -7,7 +7,15 @@ project(larm1_slam)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+<<<<<<< HEAD
 find_package(catkin REQUIRED)
+=======
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+)
+>>>>>>> bcbf1079cf2c859dabfede0367d9ec14b6805337
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -66,7 +74,11 @@ find_package(catkin REQUIRED)
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
+<<<<<<< HEAD
 #   std_msgs  # Or other packages containing msgs
+=======
+#   std_msgs
+>>>>>>> bcbf1079cf2c859dabfede0367d9ec14b6805337
 # )
 
 ################################################
@@ -101,7 +113,11 @@ find_package(catkin REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES larm1_slam
+<<<<<<< HEAD
 #  CATKIN_DEPENDS other_catkin_pkg
+=======
+#  CATKIN_DEPENDS roscpp rospy std_msgs
+>>>>>>> bcbf1079cf2c859dabfede0367d9ec14b6805337
 #  DEPENDS system_lib
 )
 
@@ -113,7 +129,11 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
+<<<<<<< HEAD
 # ${catkin_INCLUDE_DIRS}
+=======
+  ${catkin_INCLUDE_DIRS}
+>>>>>>> bcbf1079cf2c859dabfede0367d9ec14b6805337
 )
 
 ## Declare a C++ library
