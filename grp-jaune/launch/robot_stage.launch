@@ -1,9 +1,9 @@
 <launch>
   <node pkg="stage_ros" type="stageros" name="stageros" args="$(find stage_ros)/world/willow-erratic.world">
   </node>
-  <node pkg="larm1_slam" name="move" type="move.py" args="$(find larm1_slam)/scripts/move.py">
+  <node pkg="larm1_slam" name="move" type="move.py" args="$(find larm1_slam)/scripts/move.py" output="screen">
   </node>
-  <node pkg="larm1_slam" name="listener" type="listener.py" args="$(find larm1_slam)/scripts/listener.py">
+  <node pkg="larm1_slam" name="listener" type="listener.py" args="$(find larm1_slam)/scripts/listener.py" output="screen">
   </node>
   <param name="/use_sim_time" value="true"/>
   <param name="topic" value="base_scan"/>
