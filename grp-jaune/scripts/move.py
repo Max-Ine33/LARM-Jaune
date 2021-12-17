@@ -5,9 +5,8 @@ from std_msgs.msg import String
 
 pub = 0
 
-
-def debug():
-
+#def debug():
+ #      print("[ACTION] : Je tourne à droite")
 
 def move():
     global pub
