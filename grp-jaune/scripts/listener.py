@@ -7,7 +7,7 @@ from sensor_msgs.msg import LaserScan
 rospy.init_node('move', anonymous=True)
 
 commandPublisher = rospy.Publisher(
-    '/cmd_vel',
+    '/cmd_vel_mux/input/navi',
     Twist, queue_size=10
 )
 obstacles= []
@@ -21,29 +21,40 @@ def move_command(data):
     cmd= Twist()
     obstacle_devant = False
     obstacle_gauche = False
-    zone_devant = [[-0.2, 0.2],[0.1, 0.3]]
-    zone_gauche = [[-1.0, -0.2],[-0.2, 0.2]]
+    zone_devant = [[-0.2, 0.2],[0.1, 0.5]]
+    #zone_gauche = [[-1.0, -0.2],[-0.2, 0.2]]
     for p in obstacles[0:]:
-        px = round(p[0],2)
-        py = round(p[1],2)
+        px = p[0]
+        py = p[1]
         if py > zone_devant[1][0] and py < zone_devant[1][1]:
             if px > zone_devant[0][0] and px < zone_devant[0][1]:
                 obstacle_devant = True
-        if py > zone_gauche[1][0] and py < zone_gauche[1][1]:
-            if px > zone_gauche[0][0] and px < zone_gauche[0][1]:
-                obstacle_gauche = True
+                print("#######break !!!!!")
+                break
 
-    if obstacle_devant == True and obstacle_gauche == False:
+    if obstacle_devant == True:
         print("\nobstacle devant, je tourne à droite")
         cmd.linear.x= 0.0
         cmd.angular.z = -0.5
-        #cmd.linear.x= 1.0
-    elif obstacle_devant == True and obstacle_gauche == True:
-        print("\nobstacle gauche")
-        cmd.linear.x= 0.0
     else:
-        print("\nj'avance")
+        print("\nj'avance tout droit")
         cmd.linear.x= 1.0
+        cmd.angular.z = 0.0
+        #if py > zone_gauche[1][0] and py < zone_gauche[1][1]:
+        #    if px > zone_gauche[0][0] and px < zone_gauche[0][1]:
+        #        obstacle_gauche = True
+
+    #if obstacle_devant == True:
+     #   print("\nobstacle devant, je tourne à droite")
+      #  cmd.linear.x= 0.0
+        #cmd.angular.z = -0.5
+        #cmd.linear.x= 1.0
+    #elif obstacle_devant == True and obstacle_gauche == True:
+    #    print("\nobstacle gauche")
+    #    cmd.linear.x= 0.0
+    #else:
+    #    print("\nj'avance tout droit")
+    #    cmd.linear.x= 1.0"""
            
                 
     
@@ -70,7 +81,7 @@ def interpret_scan(data):
     
 
 # connect to the topic:
-rospy.Subscriber('/base_scan', LaserScan, interpret_scan)
+rospy.Subscriber('/scan', LaserScan, interpret_scan)
 
 # call the move_command at a regular frequency:
 rospy.Timer( rospy.Duration(0.1), move_command, oneshot=False )
