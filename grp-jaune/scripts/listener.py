@@ -1,47 +1,47 @@
 #!/usr/bin/python3
-import rospy
-from sensor_msgs.msg import LaserScan
-import sensor_msgs.msg
+import math, rospy, math
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import LaserScan
 
-def callback(msg):
-    #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
-    print("##############################################")
-    print("Value at 0 degree:", msg.ranges[0])
-    print("values at 90 degree", msg.ranges[360])
-    print("values at 180 degree", msg.ranges[719])
-    
+# Initialize ROS::node
+rospy.init_node('move', anonymous=True)
 
-    #If the distance to an obstacle in front of the robot is bigger than 1 meter, the robot will move forward
-    if msg.ranges[360] < 1.0:
-        print("obstacle devant")
-    if msg.ranges[719] < 1.0:
-        print("obstacle côté gauche")
-    if msg.ranges[0] < 1.0:
-        print("obstacle côté droit")
-    if msg.ranges[360] > 1.0:
-        print("je vais tout droit")
-        move.linear.x = 1.0
-        move.angular.z = 0.0
-    #If the distance to an obstacle in front of the robot is smaller than 1 meter, the robot will stop
-    elif msg.ranges[719] > 1.0 and msg.ranges[360] < 1.0:
-        print("je vais à gauche")
-        move.linear.x = -1.0
-        #move.linear.z = 1.0
-    else:
-        move.linear.x = 0.0
-        move.angular.z = 0.0
+commandPublisher = rospy.Publisher(
+    '/cmd_vel_mux/input/navi',
+    Twist, queue_size=10
+)
 
-    pub.publish(move)
-    
-#def listener():
-rospy.init_node('listener', anonymous=True)
-sub = rospy.Subscriber('/base_scan', LaserScan, callback)
-pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-rospy.Rate(10) # 10hzrospy.init_node('listener', anonymous=True)
-move = Twist()
-    # spin() simply keeps python from exiting until this node is stopped
-print("start listener.py")
+# Publish velocity commandes:
+def move_command(data):
+    global commandPubisher
+    # Compute cmd_vel here and publish... (do not forget to reduce timer duration)
+    cmd= Twist()
+    cmd.linear.x= 0.1
+    commandPublisher.publish(cmd)
+
+# Publish velocity commandes:
+def interpret_scan(data):
+    rospy.loginfo('I get scans')
+    obstacles= []
+    angle= data.angle_min
+    for aDistance in data.ranges :
+        if 0.1 < aDistance and aDistance < 5.0 :
+            aPoint= [ 
+                math.cos(angle) * aDistance, 
+                math.sin( angle ) * aDistance
+            ]
+            obstacles.append( aPoint )
+        angle+= data.angle_increment
+    rospy.loginfo( str(
+        [ [ round(p[0], 2), round(p[1], 2) ] for p in  obstacles[0:10] ] 
+    ) + " ..." )
+
+# connect to the topic:
+rospy.Subscriber('scan', LaserScan, interpret_scan)
+
+# call the move_command at a regular frequency:
+rospy.Timer( rospy.Duration(0.1), move_command, oneshot=False )
+# spin() enter the program in a infinite loop
+print("Start move.py")
 rospy.spin()
 
-print("start listener.py")
