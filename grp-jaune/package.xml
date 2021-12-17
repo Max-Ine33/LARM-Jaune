@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>larm1_slam</name>
+  <name>grp-jaune</name>
   <version>0.0.0</version>
-  <description>The larm1_slam package</description>
+  <description>The grp-jaune package</description>
 
    <maintainer email="fabien.plouvier@todo.todo">fabien.plouvier</maintainer>
 
