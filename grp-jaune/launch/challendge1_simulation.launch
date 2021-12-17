@@ -1,17 +1,9 @@
+<?xml version="1.0"?>
 <launch>
-<include file="$(find tbot_gazebo)/launch/start_world.launch">
-		<arg name="world_file" value="$(find larm)/models/challenge-1.world" />
-	</include>
-
-    <include file="$(find tbot_gazebo)/launch/spawn_tbot.launch">
-	    <arg name="x" value="-3.32" />
-	    <arg name="y" value="-2.95" />
-	    <arg name="yaw" value="2.86" />
-    </include>
-  <node pkg="grp-jaune" name="move" type="move.py" args="$(find grp-jaune)/script_simulation/move.py" output="screen">
-  </node>
-  <node pkg="grp-jaune" name="listener" type="listener.py" args="$(find grp-jaune)/script_simulation/listener.py" output="screen">
-  </node>
-  <param name="/use_sim_time" value="true"/>
-  <param name="topic" value="base_scan"/>
+	<include file="$(find larm)/launch/challenge-1.launch"/>
+    
+	<node pkg="grp-jaune" name="move" type="move_sim.py" args="$(find grp-jaune)/script_simulation/move_sim.py" output="screen"/>
+	<node pkg="grp-jaune" name="listener" type="listener_sim.py" args="$(find grp-jaune)/script_simulation/listener_sim.py" output="screen"/>
+	
+	<param name="/use_sim_time" value="true"/>
 </launch>

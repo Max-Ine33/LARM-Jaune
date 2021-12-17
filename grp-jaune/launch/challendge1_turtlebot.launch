@@ -1,8 +1,8 @@
+<?xml version="1.0"?>
 <launch>
-  <node pkg="grp-jaune" name="move" type="move.py" args="$(find grp-jaune)/script_turtlebot/move.py" output="screen">
-  </node>
-  <node pkg="grp-jaune" name="listener" type="listener.py" args="$(find grp-jaune)/script_turtlebot/listener.py" output="screen">
-  </node>
-  <param name="/use_sim_time" value="true"/>
-  <param name="topic" value="base_scan"/>
+	<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+	
+	<node name="laser" pkg="urg_node" type="urg_node"/>
+	<node pkg="grp-jaune" name="move" type="move_bot.py" args="$(find grp-jaune)/script_turtlebot/move_bot.py" output="screen"/>
+	<node pkg="grp-jaune" name="listener" type="listener_bot.py" args="$(find grp-jaune)/script_turtlebot/listener_bot.py" output="screen"/>
 </launch>
