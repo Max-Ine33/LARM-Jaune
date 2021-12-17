@@ -1,7 +1,7 @@
 <launch>
-  <node pkg="larm1_slam" name="move" type="move.py" args="$(find larm1_slam)/script_turtlebot/move.py" output="screen">
+  <node pkg="grp-jaune" name="move" type="move.py" args="$(find grp-jaune)/script_turtlebot/move.py" output="screen">
   </node>
-  <node pkg="larm1_slam" name="listener" type="listener.py" args="$(find larm1_slam)/script_turtlebot/listener.py" output="screen">
+  <node pkg="grp-jaune" name="listener" type="listener.py" args="$(find grp-jaune)/script_turtlebot/listener.py" output="screen">
   </node>
   <param name="/use_sim_time" value="true"/>
   <param name="topic" value="base_scan"/>

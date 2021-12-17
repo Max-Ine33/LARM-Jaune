@@ -24,7 +24,7 @@ def move_command(data):
     elif data.data=="TournerGauche":
         cmd.angular.z=-5
     else:
-        cmd.linear.x= 1.0
+        cmd.linear.x= 0.3
     #rate = rospy.Rate(1)
     pub.publish(cmd)
     
