@@ -8,3 +8,6 @@ The specifications were :
       will reach a specific reachable position in the area is equal to 1 at infinity times).  
         
         
+To complete those specifications, we created the "grp-jaune" file which contains the "launch" and "scripts" files.  
+The "scripts" file contains Python scripts that determines the Turtlebot's reaction when faced to an obstacle.  
+The launch files allows the node to start.
