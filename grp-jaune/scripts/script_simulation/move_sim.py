@@ -53,6 +53,6 @@ def move_command(data):
     
 #Au démarrage du script, on execute la fonction principale
 if __name__ == '__main__':
-    debug("Lancement du script move_sim.py", "Debut")
+    debug("Lancement du script move_sim.py", "", "Debut")
     move()
        
