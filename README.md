@@ -27,3 +27,43 @@ The behavior is **split into 2 nodes** (obstacle detection, and move).
         ├── listener_bot.py
         └── move_bot.py
 ```
+
+## How to install and run the scripts?
+⚠️To be able to use our work correctly, please follow the steps for **installing** and **running** the files/scripts.
+
+### Installation
+1. Clone our folder in your directory: 
+```git
+git clone https://github.com/Max-Ine33/LARM-Jaune.git
+```
+
+2. Change the current git branch to challenge1
+```git
+git checkout challenge1
+```
+
+*Note :  
+The grp-yellow folder requires the [mb6-tbot](https://bitbucket.org/imt-mobisyst/AC/src/master/) package.  
+It is already on the challenge1 branch. Make sure it is installed correctly after cloning.* 
+
+### Running
+From the catkin worskspace  
+1. Compile the project :
+```Bash
+catkin_make
+```
+
+2. Source the project :
+```Bash
+source devel/setup.bash
+```
+
+3. Launch the simulation :  
+```Bash
+roslaunch grp-jaune challenge1_simulation.launch
+```
+
+4. Launch the Turtlebot demonstration :  
+```Bash
+roslaunch grp-jaune challenge1_turtlebot.launch
+```
