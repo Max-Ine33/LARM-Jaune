@@ -10,11 +10,11 @@ from std_msgs.msg import String
 #On déclare les constantes
 VITESSE_ANGULAIRE = 0.5    #Cela représente la vitesse de rotation du robot sur lui même
 VITESSE_LINEAIRE = 0.8     #Cela représente la vitesse du robot lorsqu'il va droit devant lui
+DEBUG_MODE = False
 
 
 #On déclare les variables
 commandPublisher = 0
-debugMode = False
 
 
 #Fonction pour afficher des informations de débogages
@@ -39,15 +39,15 @@ def move_command(data):
     global debugMode
     cmd = Twist()
     if data.data == "TournerGauche":
-        if debugMode:
+        if DEBUG_MODE:
             debug("Je tourne à gauche à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = -VITESSE_ANGULAIRE
     elif data.data == "TournerDroite":
-        if debugMode:
+        if DEBUG_MODE:
             debug("Je tourne à droite à une vitesse de ", VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = VITESSE_ANGULAIRE
     else:
-        if debugMode:
+        if DEBUG_MODE:
             debug("Je vais tout droit à une vitesse de ", VITESSE_LINEAIRE, "Action")
         cmd.linear.x = VITESSE_LINEAIRE
     commandPublisher.publish(cmd)
@@ -55,7 +55,7 @@ def move_command(data):
     
 #Au démarrage du script, on execute la fonction principale
 if __name__ == '__main__':
-    if debugMode:
+    if DEBUG_MODE:
         debug("Lancement du script move_sim.py", "Debut")
     move()
        
