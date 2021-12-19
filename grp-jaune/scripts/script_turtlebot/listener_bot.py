@@ -24,16 +24,17 @@ rospy.init_node('move', anonymous=True)
      
 #Fonction pour afficher des informations de débogages
 def debug(info, type_debug):
-    if type_debug == "Alerte":
-        print("[ALERTE] : ", info)
-    elif type_debug == "Debut":
-        print("\n\n[INITIALISATION] : ", info)       
+    global DEBUG_MODE
+    if DEBUG_MODE:
+        if type_debug == "Alerte":
+            print("[ALERTE] : ", info)
+        elif type_debug == "Debut":
+            print("\n\n[INITIALISATION] : ", info)       
 
 
 #Fonction qui détecte élèments scannés par le laser:
 def interpret_scan(data):
     global commandPublisher    #on déclare les variables qui seront utilisées
-    global DEBUG_MODE
     msg_envoi = "void"
     obstacles= []              #on utilise le code de conversion des données du laser en point cloud, fournit
     angle= data.angle_min
@@ -48,17 +49,14 @@ def interpret_scan(data):
     for obs in obstacles:
         if(obs[0] > 0 and obs[0] < INTERVALLE_X):         #si l'obstacle à proximité se situe dans l'intervalle de l'axe X voulut
             if(obs[1] > -INTERVALLE_Y and obs[1] < 0):    #alors, on fait des tests pour savoir si l'élèment se trouve à gauche ou à droite
-                if DEBUG_MODE:
-                    debug("Obstacle à droite !", "Alerte")
+                debug("Obstacle à droite !", "Alerte")
                 msg_envoi = "TournerDroite"               #le robot demande de changer alors de sens 
             if(obs[1] > 0 and obs[0] < INTERVALLE_Y):
-                if DEBUG_MODE:
-                    debug("Obstacle à gauche !", "Alerte")
+                debug("Obstacle à gauche !", "Alerte")
                 msg_envoi = "TournerGauche"          
     commandPublisher.publish(msg_envoi)       
                 
 rospy.Subscriber('/scan', LaserScan, interpret_scan)
-if DEBUG_MODE:
-        debug("Lancement du script listener_bot.py", "Debut")
+debug("Lancement du script listener_bot.py", "Debut")
 rospy.spin()
 

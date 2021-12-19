@@ -19,10 +19,12 @@ commandPublisher = 0
 
 #Fonction pour afficher des informations de débogages
 def debug(info, param, type_debug):
-    if type_debug == "Action":
-        print("[ACTION] : ", info, param)
-    elif type_debug == "Debut":
-        print("\n\n[INITIALISATION] : ", info)
+    global DEBUG_MODE
+    if DEBUG_MODE:
+        if type_debug == "Action":
+            print("[ACTION] : ", info, param)
+        elif type_debug == "Debut":
+            print("\n\n[INITIALISATION] : ", info)
     
     
 #On se met sur écoute du topic utilisé par le laser
@@ -36,26 +38,21 @@ def move():
 
 #On réalise les actions en fonction des données reçues
 def move_command(data):
-    global debugMode
     cmd = Twist()
     if data.data == "TournerGauche":
-        if DEBUG_MODE:
-            debug("Je tourne à gauche à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
+        debug("Je tourne à gauche à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = -VITESSE_ANGULAIRE
     elif data.data == "TournerDroite":
-        if DEBUG_MODE:
-            debug("Je tourne à droite à une vitesse de ", VITESSE_ANGULAIRE, "Action")
+        debug("Je tourne à droite à une vitesse de ", VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = VITESSE_ANGULAIRE
     else:
-        if DEBUG_MODE:
-            debug("Je vais tout droit à une vitesse de ", VITESSE_LINEAIRE, "Action")
+        debug("Je vais tout droit à une vitesse de ", VITESSE_LINEAIRE, "Action")
         cmd.linear.x = VITESSE_LINEAIRE
     commandPublisher.publish(cmd)
     
     
 #Au démarrage du script, on execute la fonction principale
 if __name__ == '__main__':
-    if DEBUG_MODE:
-        debug("Lancement du script move_sim.py", "Debut")
+    debug("Lancement du script move_sim.py", "Debut")
     move()
        
