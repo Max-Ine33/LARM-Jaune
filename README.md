@@ -1,4 +1,10 @@
-# LARM-Max-Fab
+# General information
+- **UV** : LARM
+- **Group** : grp-jaune
+- **Name** : Fabien Plouvier and Maxine Gravier
+- **Date** : 13/12/2021 -> 19/12/2021
+- **Challenge** : 1  
+
 📌This branch of our Git repository corresponds to our work for the Challenge 1.  
   
 ## What is the context?
