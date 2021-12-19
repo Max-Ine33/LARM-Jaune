@@ -11,11 +11,11 @@ from std_msgs.msg import String
 #On déclare les constantes
 INTERVALLE_X = 0.25    #Les points qui sont étudiés se situent sur l'intervalle [0, 0.25] sur l'axe des X
 INTERVALLE_Y = 0.2     #Les points qui sont étudiés se situent sur l'intervalle [0, 0.2] sur l'axe des Y
+DEBUG_MODE = False
 
 
 #On déclare les variables
 commandPublisher = rospy.Publisher('/PresenceObs',String, queue_size=10)
-debugMode = False
 
 
 #On initialise notre noeud
@@ -47,17 +47,17 @@ def interpret_scan(data):
     for obs in obstacles:
         if(obs[0] > 0 and obs[0] < INTERVALLE_X):         #si l'obstacle à proximité se situe dans l'intervalle de l'axe X voulut
             if(obs[1] > -INTERVALLE_Y and obs[1] < 0):    #alors, on fait des tests pour savoir si l'élèment se trouve à gauche ou à droite
-                if debugMode:
+                if DEBUG_MODE:
                     debug("Obstacle à droite !", "Alerte")
                 msg_envoi = "TournerDroite"               #le robot demande de changer alors de sens 
             if(obs[1] > 0 and obs[0] < INTERVALLE_Y):
-                if debugMode:
+                if DEBUG_MODE:
                     debug("Obstacle à gauche !", "Alerte")
                 msg_envoi = "TournerGauche"           
     commandPublisher.publish(msg_envoi)       
                 
-rospy.Subscriber('scan', LaserScan, interpret_scan)
-if debugMode:
+rospy.Subscriber('/scan', LaserScan, interpret_scan)
+if DEBUG_MODE:
         debug("Lancement du script listener_sim.py", "Debut")
 rospy.spin()
 
