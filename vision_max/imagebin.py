@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from skimage.measure import label, regionprops
 import math
 
-image = cv2.imread('./vector-handwritten-numbers-on-white-background-brusk-stroke.jpg')
+image = cv2.imread('data/vector_background.jpg')
 
 # passage en niveau de gris
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
