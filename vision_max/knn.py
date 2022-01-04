@@ -7,6 +7,7 @@ Created on Tue Jan  4 09:52:34 2022
 """
 import numpy as np
 import cv2
+from markdown.extensions import meta
 
 basedir_data = "./data/"
 rel_path = basedir_data + "cifar-10-batches-py/"
