@@ -3,6 +3,7 @@ import cv2
 
 objet_cascade = cv2.CascadeClassifier('cars.xml')
 
+#lien des vidéos : https://github.com/andrewssobral/vehicle_detection_haarcascades/tree/master/dataset
 cap = cv2.VideoCapture('road.avi')
 #cap = cv2.VideoCapture(0)
 
