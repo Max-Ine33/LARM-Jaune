@@ -1,11 +1,11 @@
 import numpy as np
 import cv2
 
-objet_cascade = cv2.CascadeClassifier('cars.xml')
+objet_cascade = cv2.CascadeClassifier('data/xml/face.xml')
 
 #lien des vidéos : https://github.com/andrewssobral/vehicle_detection_haarcascades/tree/master/dataset
-cap = cv2.VideoCapture('road.avi')
-#cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture('data/videos/dataset_video2.avi')
+cap = cv2.VideoCapture(0)
 
 while 1:
     ret, img = cap.read()
