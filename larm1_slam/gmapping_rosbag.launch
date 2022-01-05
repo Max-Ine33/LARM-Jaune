@@ -1,0 +1,12 @@
+<launch>
+
+  
+  <node pkg="rviz" type="rviz" name="stageros_rviz" args="$(find larm1_slam)/configrviz.rviz">
+  </node>
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" args="scan:=base_scan" output="screen"/> 
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find stage_ros)/world/willow-erratic.world"/>
+
+  <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/fabien.plouvier/Téléchargements/basic_localization_stage.bag"/>
+  <param name="/use_sim_time" value="true"/>
+  
+</launch>
