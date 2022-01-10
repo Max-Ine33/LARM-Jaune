@@ -2,7 +2,7 @@
 
 
 #On précise les imports
-import math, rospy, math
+import math, rospy, math, tf
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
@@ -17,11 +17,10 @@ DEBUG_MODE = False
 
 #On déclare les variables
 commandPublisher = rospy.Publisher('/PresenceObs',String, queue_size=10)
-
+tfListener = tf.TransformListener()
 
 #On initialise notre noeud
 rospy.init_node('Interception', anonymous=True)
-
 
 #Fonction pour afficher des informations de débogages
 def debug(info, type_debug):
@@ -33,8 +32,15 @@ def debug(info, type_debug):
             print("\n\n[INITIALISATION] : ", info)       
 
 
-def callback(data):
-	rospy.loginfo("I heard %s",data.pose.pose)
+def callback_odom(data):
+	rospy.loginfo("[ODOMETRY] Callback du goal %s",data.pose.pose)
+	
+def callback_tf(data):
+	local_goal= tfListener.transformPose("/base_footprint", data.pose.pose)
+	rospy.loginfo("[TF] Callback du goal, local_goal = %s",local_goal)
+	
+	
+	
 	
 #Fonction qui détecte élèments scannés par le laser:
 def interpret_scan(data):
@@ -59,9 +65,15 @@ def interpret_scan(data):
                 debug("Obstacle à gauche !", "Alerte")
                 msg_envoi = "TournerGauche"           
     commandPublisher.publish(msg_envoi)       
+          
+          
                 
+#Les suscribers
 rospy.Subscriber('/scan', LaserScan, interpret_scan)
-rospy.Subscriber('/goal',Odometry,callback)
+rospy.Subscriber('/goal',Odometry,callback_odom)
+rospy.Subscriber('/tf',Odometry,callback_odom)
+
+rospy.Timer(rospy.Duration(0.1), callback_tf, oneshot=False)
 debug("Lancement du script listener_sim.py", "Debut")
 rospy.spin()
 
