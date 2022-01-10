@@ -1,0 +1,6 @@
+<launch>
+
+<node pkg="tf" type="static_transform_publisher" name="base_footprint_in_odom"
+  args="2.3 4.0 0.01 0.8 0.0 0.0 /odom /base_footprint 80" />
+  
+</launch>
