@@ -1,6 +1,6 @@
 <launch>
 
-  <include file="$(find my_teleop)/launch/keyboard_teleop.launch"/>
+  <include file="$(find my_teleop)/Haar/launch/keyboard_teleop.launch"/>
   <include file="$(find larm1_slam)/gmapping.launch"/>
   <node pkg="stage_ros" type="stageros" name="stageros" args="$(find stage_ros)/world/willow-erratic.world">
   </node>
