@@ -1,0 +1,8 @@
+<launch>
+
+  <!--<include file="$(find my_teleop)/Haar/launch/keyboard_teleop.launch"/>-->
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen"/> 
+  <node pkg="grp-jaune" name="bottle2markers" type="bottle2markers.py" output="screen" />
+  <node pkg="rviz" type="rviz" name="stageros_rviz"/>
+  
+</launch>
