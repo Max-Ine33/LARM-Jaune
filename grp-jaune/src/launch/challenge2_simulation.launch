@@ -1,9 +1,16 @@
 <launch>
+	<node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/fabien.plouvier/Documents/challenge-2.bag" />
+	
+  <node pkg="grp-jaune" name="mark_bottle_visio" type="mark_bottle_visio.py" output="screen"/>
+  
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"/>
+  
+  
+  <node pkg="rviz" type="rviz" name="rviz" args=" -d $(find grp-jaune)/src/data/challenge2.rviz"/>
 
-  <!--<include file="$(find my_teleop)/Haar/launch/keyboard_teleop.launch"/>-->
-  <!--<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen"/> -->
-  <node pkg="grp-jaune" name="bottle2markers" type="bottle2markers.py" output="screen" />
-  <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/fabien.plouvier/Téléchargements/basic_localization_stage.bag"/>
-  <!--<node pkg="rviz" type="rviz" name="stageros_rviz"/>-->
+
+  
+  <param name="/use_sim_time" value="true" />
+  
   
 </launch>
