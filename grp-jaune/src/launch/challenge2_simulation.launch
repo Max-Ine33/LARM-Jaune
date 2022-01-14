@@ -1,7 +1,8 @@
 <launch>
-	<node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/fabien.plouvier/Documents/challenge-2.bag" />
+
+  <node pkg="rosbag" type="play" name="player" args="--clock /home/fabien.plouvier/Documents/challenge-2.bag" />
 	
-  <node pkg="grp-jaune" name="mark_bottle_visio" type="mark_bottle_visio.py" output="screen"/>
+  <node pkg="grp-jaune" name="challenge2" type="challenge2.py" output="screen"/>
   
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"/>
   
