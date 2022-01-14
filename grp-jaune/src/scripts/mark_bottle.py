@@ -18,7 +18,7 @@ rospy.init_node('training', anonymous=True)
 # print(chemin)
 img = np.array([[200, 33, 213]], np.uint8)
 bridge = CvBridge()
-object_cascade = cv2.CascadeClassifier("chemin_fichier_xml")
+object_cascade = cv2.CascadeClassifier("/home/bot/catkin_ws/src/LARM-Jaune/grp-jaune/src/data/cascade.xml")
 cam_info = CameraInfo()
 depth = 0
 stamp=0
@@ -29,24 +29,25 @@ publisher_led = rospy.Publisher('/mobile_base/commands/led1', Led, queue_size=10
 publisher_bouteilles = rospy.Publisher('/bottle', Marker, queue_size=10)
 
 def perception_img(data):
+    print("perception data start !")
     global stamp
     stamp = data.header.stamp
     img = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     object = object_cascade.detectMultiScale(gray, 1.2, minNeighbors=3)
     for (x, y, w, h) in object:
         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
-        dist = trouver_distance(x, y, w, h)
-        point = calculer_point_central(x, y, w, h, dist)
-        print(x, y, w, h, dist, point)
-        publier_bouteille(point)
+        #dist = trouver_distance(x, y, w, h)
+        #point = calculer_point_central(x, y, w, h, dist)
+        #print(x, y, w, h, dist, point)
+        #publier_bouteille(point)
     print("==================")
-    gerer_led(len(object))
-
+    #gerer_led(len(object))
+    print("perception data finish !")
     
 
-    #cv2.imshow("img", img)
+    cv2.imshow("img", img)
     #cv2.waitKey(33)
 
 
@@ -63,14 +64,8 @@ def perception_caminfo(data):
     global cam_info
     cam_info = data
 
-
-listener_img = rospy.Subscriber("/camera/color/image_raw", Image, perception_img)
-listener_depth = rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, perception_depth)
-listener_cam_info = rospy.Subscriber("/camera/color/camera_info", CameraInfo, perception_caminfo)
-
-
 def trouver_distance(x, y, w, h):
-    centre_depth = depth[y+h//4:y+3*h//4, x+w//4:x+3*w//4] # récupérer centre du rectangle de détection
+    centre_depth = depth[y+h/4:y+3*h/4, x+w/4:x+3*w/4] # récupérer centre du rectangle de détection
     dist = np.median(centre_depth) # prendre la médiane de ce rectangle permet de ne pas être affecté par les valeurs extremes comme l'arrière plan
     return dist / 1000 # convertir les mm en m
 
@@ -105,9 +100,13 @@ def publier_bouteille(point):
     msg.scale.x, msg.scale.y, msg.scale.z = [0.1, 0.1, 0.1]
     msg.color.r, msg.color.g, msg.color.b, msg.color.a = [0, 255, 0, 255]
     msg.lifetime.secs, msg.lifetime.nsecs = [2, 0]
+    print("publish bottle")
     publisher_bouteilles.publish(msg)
     count_bouteille += 1
 
 # spin() enter the program in a infinite loop
-print("Start scanop.py")
+print("Start mark_bottle.py")
+listener_img = rospy.Subscriber("/camera/color/image_raw", Image, perception_img)
+listener_depth = rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, perception_depth)
+listener_cam_info = rospy.Subscriber("/camera/color/camera_info", CameraInfo, perception_caminfo)
 rospy.spin()
