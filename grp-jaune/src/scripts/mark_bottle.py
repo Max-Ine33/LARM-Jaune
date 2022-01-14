@@ -1,94 +1,113 @@
-#!/usr/bin/env python3
-from __future__ import print_function
-#import rospy, math, std_msgs.msg, time
-import cv2 as cv
-import argparse
+#!/usr/bin/python3
+
+from itertools import starmap
+import rospy
 import numpy as np
-#from sensor_msgs.msg import Image
+import cv2
+from visualization_msgs.msg import Marker
+from geometry_msgs.msg import Twist, Point, PointStamped
+from sensor_msgs.msg import PointCloud, LaserScan, Image, CameraInfo
 from cv_bridge import CvBridge
+from kobuki_msgs.msg import Led
+import image_geometry
 
-# import mark_bottle
+# Initialize ROS::node
+rospy.init_node('training', anonymous=True)
 
-#rospy.init_node('bottleDetection', anonymous=True)
+# chemin = rospy.__path__  #+ "src/scripts/cascade.xml"
+# print(chemin)
+img = np.array([[200, 33, 213]], np.uint8)
+bridge = CvBridge()
+object_cascade = cv2.CascadeClassifier("chemin_fichier_xml")
+cam_info = CameraInfo()
+depth = 0
+stamp=0
+nb_detections = 0
+count_bouteille = 0
 
-lower_red = np.array([4, 150, 50])
-upper_red = np.array([7, 245, 220])
-lower_white = np.array([0, 0, 150])
-upper_white = np.array([179, 50, 220])
+publisher_led = rospy.Publisher('/mobile_base/commands/led1', Led, queue_size=10)
+publisher_bouteilles = rospy.Publisher('/bottle', Marker, queue_size=10)
 
+def perception_img(data):
+    global stamp
+    stamp = data.header.stamp
+    img = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    object = object_cascade.detectMultiScale(gray, 1.2, minNeighbors=3)
+    for (x, y, w, h) in object:
+        cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
+        dist = trouver_distance(x, y, w, h)
+        point = calculer_point_central(x, y, w, h, dist)
+        print(x, y, w, h, dist, point)
+        publier_bouteille(point)
+    print("==================")
+    gerer_led(len(object))
 
-def detectAndDisplay(raw):
-    global lower_red
-    global upper_red
-    global lower_white
-    global upper_white
-    bridge = CvBridge()
+    
 
-    frame = bridge.imgmsg_to_cv2(raw, desired_encoding='bgr8')
-
-    frame_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    frame_gray = cv.equalizeHist(frame_gray)
-    # -- Detect bottles
-    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    maskRed = cv.inRange(hsv, lower_red, upper_red)
-    maskWhite = cv.inRange(hsv, lower_white, upper_white)
-    bottles = bottle_cascade.detectMultiScale(frame_gray)
-    redCount = 0
-    whiteCount = 0
-    for (x, y, w, h) in bottles:
-        # bottleROI = frame_gray[y:y+h,x:x+w]
-        # frame = cv.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        frame = cv.rectangle(frame, (x, int(y + (h / 4))), (x + w, (y + int(h * (3 / 4)))), (0, 255, 0), 2)
-        for i in range(y + int(h / 4), y + int(h * (3 / 4))):
-            for j in range(x, x + w):
-                pixel = maskRed.item(i, j)
-                pixel2 = maskWhite.item(i, j)
-                if (pixel == 255):
-                    redCount = redCount + 1
-                if (pixel2 == 255):
-                    whiteCount = whiteCount + 1
-
-        if ((redCount >= (h * w) * 0.04) and (whiteCount >= (h * w) * 0.04)):
-            center = (x + w // 2, y + h // 2)
-            frame = cv.ellipse(frame, center, (w // 2, h // 2), 0, 0, 360, (0, 0, 255), 4)
-            # get3DPosition(center)
-
-    cv.imshow('RedMask', maskRed)
-    cv.imshow('WhiteMask', maskWhite)
-    cv.imshow('Capture - Bottle detection', frame)
-    cv.waitKey(3)
+    #cv2.imshow("img", img)
+    #cv2.waitKey(33)
 
 
-# parser = argparse.ArgumentParser(description='Code for Cascade Classifier tutorial.')
-# parser.add_argument('--bottle_cascade', help='Path to bottle cascade.', default='/home/elias.anton/catkin-ws/src/bilderkennung/data2/cascade.xml')
-# parser.add_argument('--camera', help='Camera divide number.', type=int, default=4)
-# args = parser.parse_args()
-# bottle_cascade_name = args.bottle_cascade
-# bottle_cascade = cv.CascadeClassifier()
+depth = 0
 
-bottle_cascade_name = '/home/elias.anton/catkin-ws/src/grp-vert/bilderkennung/data3/cascade.xml'
-bottle_cascade = cv.CascadeClassifier()
 
-# -- 1. Load the cascade
-if not bottle_cascade.load(cv.samples.findFile(bottle_cascade_name)):
-    print('--(!)Error loading bottle cascade')
-    exit(0)
+def perception_depth(data):
+    global depth
+    depth = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
+    #cv2.imshow("depth", depth)
+    #cv2.waitKey(33)
 
-# rospy.Subscriber("/camera/color/image_raw", Image, detectAndDisplay)
-# # if cv.waitKey(10) == 27:
-# #     break
-# rospy.spin()
+def perception_caminfo(data):
+    global cam_info
+    cam_info = data
 
-# -- 2. Read the video stream
-cap=cv.VideoCapture(0)
-if not cap.isOpened:
-    print('--(!)Error opening video capture')
-    exit(0)
-while True:
-    ret, frame = cap.read()
-    if frame is None:
-        print('--(!) No captured frame -- Break!')
-        break
-    detectAndDisplay(frame)
-    if cv.waitKey(10) == 27:
-        break
+
+listener_img = rospy.Subscriber("/camera/color/image_raw", Image, perception_img)
+listener_depth = rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, perception_depth)
+listener_cam_info = rospy.Subscriber("/camera/color/camera_info", CameraInfo, perception_caminfo)
+
+
+def trouver_distance(x, y, w, h):
+    centre_depth = depth[y+h//4:y+3*h//4, x+w//4:x+3*w//4] # récupérer centre du rectangle de détection
+    dist = np.median(centre_depth) # prendre la médiane de ce rectangle permet de ne pas être affecté par les valeurs extremes comme l'arrière plan
+    return dist / 1000 # convertir les mm en m
+
+def calculer_point_central(x, y, w, h, dist):
+    cam_model = image_geometry.PinholeCameraModel()
+    cam_model.fromCameraInfo(cam_info)
+    ray = np.array(cam_model.projectPixelTo3dRay((x+w//2, y+h//2))) # transformer les coordonnées du pixel central en un point dans le repère de la caméra (à une distance de 1)
+    point = ray * (dist + 0.022) # on multiplie donc par la distance mesurée par la caméra à laquelle on ajoute environ la moitié du diamètre de la bouteille
+    return point
+
+def gerer_led(nb):
+    global nb_detections
+    if nb_detections != nb:
+        nb_detections = nb
+        print(nb_detections)
+        msg = Led()
+        msg.value = nb_detections
+        if msg.value > 3: msg.value = 3
+        publisher_led.publish(msg)
+
+def publier_bouteille(point):
+    global count_bouteille
+    msg = Marker()
+    msg.header.frame_id = "camera_color_optical_frame"
+    #msg.header.stamp = stamp
+    #msg.point.x, msg.point.y, msg.point.z = point
+    msg.ns = "bottle"
+    msg.id = count_bouteille
+    msg.type = 1
+    msg.action = 0
+    msg.pose.position.x, msg.pose.position.y, msg.pose.position.z = point
+    msg.scale.x, msg.scale.y, msg.scale.z = [0.1, 0.1, 0.1]
+    msg.color.r, msg.color.g, msg.color.b, msg.color.a = [0, 255, 0, 255]
+    msg.lifetime.secs, msg.lifetime.nsecs = [2, 0]
+    publisher_bouteilles.publish(msg)
+    count_bouteille += 1
+
+# spin() enter the program in a infinite loop
+print("Start scanop.py")
+rospy.spin()
