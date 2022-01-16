@@ -28,3 +28,20 @@
 To complete those specifications, we created the 📂 "grp-jaune" folder which contains the "launch", "script" and data files
 
 👀For a better understanding, here is the tree structure of our grp-yellow folder:
+
+```bash
+├── CMakeLists.txt
+├── package.xml
+└── src
+    ├── data
+    │   ├── cascade.xml
+    │   ├── cascade_back1.xml
+    │   ├── cascade_back2.xml
+    │   ├── cascade_back3.xml
+    │   └── challenge2.rviz
+    ├── launch
+    │   ├── challenge2.launch
+    │   └── challenge2_avec_rosbag.launch
+    └── scripts
+        └── challenge2.py
+ ```
