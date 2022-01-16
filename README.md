@@ -23,3 +23,8 @@
 6. All the bottle are detected (wathever the bottle position and the background).  
 7. Only the bottle are detected (even if similar object are in the environment).  
 8. A service permit to get all bottle positions. 
+
+## What is in the branch?
+To complete those specifications, we created the 📂 "grp-jaune" folder which contains the "launch", "script" and data files
+
+👀For a better understanding, here is the tree structure of our grp-yellow folder:
