@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-from itertools import starmap
-import rospy
+
+import rospy, rospkg
 import numpy as np
 import cv2
 import tf
@@ -12,18 +12,21 @@ from cv_bridge import CvBridge
 import image_geometry
 
 # Déclaration constantes
-object_cascade = cv2.CascadeClassifier("/home/fabien.plouvier/UV-LARM/Github/catkin-ws/src/LARM-Jaune/grp-jaune/src/data/cascade.xml")
+rospack = rospkg.RosPack()
+path_pkg = rospack.get_path('grp-jaune')
+object_cascade = cv2.CascadeClassifier(path_pkg + "/src/data/cascade.xml")
+DEBUG_MODE = True
 
 
 # Initialize ROS::node
-rospy.init_node('visio_cam', anonymous=True)
+rospy.init_node('challenge2', anonymous=True)
 
 
 # Déclaration variables
 cam_info = CameraInfo()
 tfListener = tf.TransformListener()
 bridge = CvBridge()
-point_list = []
+points_list = []
 depth = 0
 count_bottle = 0
 
@@ -38,19 +41,18 @@ def perception_color(data):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     object = object_cascade.detectMultiScale(gray, 1.5, 20)
     dist = 0
-    points = []
     var_increment_distance = 0
     for (x, y, w, h) in object:
         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
         dist = calcul_distance(x, y, w, h)
         point = calcul_point_central(x, y, w, h, dist)
-        #check_proximity(poit)
-        points.append(create_point_to_map(point))
+        if not check_proximity(point):
+        	points_list.append(create_point_to_map(point))
+        	if DEBUG_MODE:
+        		print("Objet détecté à ", dist, "mètres\n")
         function_pub_bottle(point)
     cv2.imshow("img", img)
     cv2.waitKey(1)
-    if dist !=0:
-    	print("Objet détecté à ", dist, "mètres\n")
     #print("==================")
     #print("perception data finish !")
     
@@ -93,7 +95,16 @@ def calcul_point_central(x, y, w, h, dist):
 
 
 
-#def check_proximity(distance_list, dist):
+def check_proximity(nv_point, points_list):
+	for pt in points_list:
+		diff_x = abs(nv_point.x - pt.x)
+		diff_y = abs(nv.point.y - pt.y)
+		if diff_x <= 0.2 or diff_y <= 0.2 then
+			return True
+		else
+			return False
+		
+	
 
 
 
