@@ -16,7 +16,7 @@ from cv_bridge import CvBridge
 ################################################## 
 
 # Déclaration constantes
-DEBUG_MODE = True                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
+DEBUG_MODE = False                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
 AFFICHAGE_VIDEO = False                                     #On veut afficher la vidéo ?
 ECART_MAX_ENTRE_BOUTEILLE = 0.2                             #L'ecart min pour traduire comme nouvelle bouteille
 MARQUEUR_SCALE = [0.1, 0.1, 0.1]                            #Différent paramètres pour la création de marqueur
