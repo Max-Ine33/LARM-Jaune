@@ -18,7 +18,7 @@ from cv_bridge import CvBridge
 # Déclaration constantes
 DEBUG_MODE = False                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
 AFFICHAGE_VIDEO = False                                     #On veut afficher la vidéo ?
-ECART_MAX_ENTRE_BOUTEILLE = 0.2                             #L'ecart min pour traduire comme nouvelle bouteille
+ECART_MAX_ENTRE_BOUTEILLE = 0.01                             #L'ecart min pour traduire comme nouvelle bouteille
 MARQUEUR_SCALE = [0.1, 0.1, 0.1]                            #Différent paramètres pour la création de marqueur
 MARQUEUR_COLOR = [0, 255, 0, 255]                           #Comme la couleur vert
 MARQUEUR_TYPE = 1
@@ -148,8 +148,9 @@ def check_proximite(nv_point, points_list):
     # @Valeur retournée : booléen, vrai si le point a été trouvé avant, faux sinon
 
     for pt in points_list:
-        diff_x = abs(nv_point.x - pt.x)                                                 #On calcul la différence (en absolue) de la valeurs de x des points
-        diff_y = abs(nv_point.y - pt.y)                                                 #De même pour y
+        diff_x = abs(nv_point[1] - pt.point.x)                                                 #On calcul la différence (en absolue) de la valeurs de x des points
+        diff_y = abs(nv_point[2] - pt.point.y)                                                 #De même pour y
+        print("diff_x = ", diff_x)
         if diff_x <= ECART_MAX_ENTRE_BOUTEILLE or diff_y <= ECART_MAX_ENTRE_BOUTEILLE:  #Si elle est supérieur au seuil, on prend en compte comme nouvelle bouteille sinon non
             return True
         else:
