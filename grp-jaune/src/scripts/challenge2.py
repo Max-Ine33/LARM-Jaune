@@ -150,7 +150,6 @@ def check_proximite(nv_point, points_list):
     for pt in points_list:
         diff_x = abs(nv_point[1] - pt.point.x)                                                 #On calcul la différence (en absolue) de la valeurs de x des points
         diff_y = abs(nv_point[2] - pt.point.y)                                                 #De même pour y
-        print("diff_x = ", diff_x)
         if diff_x <= ECART_MAX_ENTRE_BOUTEILLE or diff_y <= ECART_MAX_ENTRE_BOUTEILLE:  #Si elle est supérieur au seuil, on prend en compte comme nouvelle bouteille sinon non
             return True
         else:
