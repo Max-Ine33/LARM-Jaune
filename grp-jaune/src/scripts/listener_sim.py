@@ -12,7 +12,7 @@ from std_msgs.msg import String
 INTERVALLE_X = 0.1    #Les points qui sont étudiés se situent sur l'intervalle [0, 0.25] sur l'axe des X
 INTERVALLE_Y = 0.1     #Les points qui sont étudiés se situent sur l'intervalle [0, 0.2] sur l'axe des Y
 DISTANCE_SCAN_MAX = 1.5
-DISTANCE_SCAN_MIN = 0.01
+DISTANCE_SCAN_MIN = 0.1
 DEBUG_MODE = True
 
 
