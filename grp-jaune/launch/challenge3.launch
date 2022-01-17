@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+	<include file="$(find larm)/launch/challenge-3.launch"/>
+    
+	<node pkg="grp-jaune" name="move" type="move_sim.py" output="screen"/>
+	<node pkg="grp-jaune" name="listener" type="listener_sim.py" output="screen"/>
+	
+	<param name="/use_sim_time" value="true"/>
+</launch>
