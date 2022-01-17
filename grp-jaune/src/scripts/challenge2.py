@@ -4,6 +4,7 @@ import rospy, rospkg
 import numpy as np
 import cv2, tf
 import image_geometry
+import time
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Twist, Point, PointStamped
 from sensor_msgs.msg import PointCloud, LaserScan, Image, CameraInfo
@@ -16,9 +17,9 @@ from cv_bridge import CvBridge
 ################################################## 
 
 # Déclaration constantes
-DEBUG_MODE = False                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
-AFFICHAGE_VIDEO = False                                     #On veut afficher la vidéo ?
-ECART_MAX_ENTRE_BOUTEILLE = 0.01                             #L'ecart min pour traduire comme nouvelle bouteille
+DEBUG_MODE = True                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
+AFFICHAGE_VIDEO = True                                      #On veut afficher la vidéo ?
+ECART_MAX_ENTRE_BOUTEILLE = 0.2                            #L'ecart min pour traduire comme nouvelle bouteille
 MARQUEUR_SCALE = [0.1, 0.1, 0.1]                            #Différent paramètres pour la création de marqueur
 MARQUEUR_COLOR = [0, 255, 0, 255]                           #Comme la couleur vert
 MARQUEUR_TYPE = 1
@@ -64,13 +65,12 @@ def debug(info, type_debug):
 def perception_color(data):
     # @Paramètre : données recu par le topic /camera/color/image_raw
     # @Valeur retournée : Aucune, on encode puis converti les données à chaque appel, on fait tous les calculs ensuite
-    global points_list
+    
+    global points_list, objet_precedent, init
     debug("Detection de couleurs.", "Info")
-
     img = bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')                     #On encode les données reçues au format voulu (ici BGR) et on les convertis
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    object = object_cascade.detectMultiScale(gray, 1.5, 20)                       #On lance la detection d'objet via le fichier cascade.xml
-
+    object = object_cascade.detectMultiScale(gray, 1.5, 25)                       #On lance la detection d'objet via le fichier cascade.xml
     for (x, y, w, h) in object:
         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)                    #Si on reconnait des objets, on les entoure d'un rectangle rouge
         distance_en_metres = calcul_distance_en_metres(x, y, w, h)                #Appel de la fonction du calcul de distance
@@ -79,8 +79,7 @@ def perception_color(data):
             points_list.append(creer_point_vers_map(point))                       #On place le nouveau point dans le repère de la "map"
             function_pub_bouteille(point)                                         #Appel de la fonction publier bouteille pour mettre le marker
             if DEBUG_MODE:
-                ("Objet détecté à ", distance_en_metres, "mètres\n")
-
+                print("Objet détecté à ", distance_en_metres, "mètres\n")
     if AFFICHAGE_VIDEO:                                                           #Pour un affichage video de la camera
         cv2.imshow("img", img)
         cv2.waitKey(1)
@@ -148,9 +147,10 @@ def check_proximite(nv_point, points_list):
     # @Valeur retournée : booléen, vrai si le point a été trouvé avant, faux sinon
 
     for pt in points_list:
-        diff_x = abs(nv_point[1] - pt.point.x)                                                 #On calcul la différence (en absolue) de la valeurs de x des points
-        diff_y = abs(nv_point[2] - pt.point.y)                                                 #De même pour y
-        if diff_x <= ECART_MAX_ENTRE_BOUTEILLE or diff_y <= ECART_MAX_ENTRE_BOUTEILLE:  #Si elle est supérieur au seuil, on prend en compte comme nouvelle bouteille sinon non
+        diff_x = abs(nv_point[1] - pt.point.x)                                                 #On calcul la différence (en absolue) de la valeurs de x,y,z des points                                              
+        diff_y = abs(nv_point[2] - pt.point.y)
+        if diff_x <= ECART_MAX_ENTRE_BOUTEILLE or diff_y <= ECART_MAX_ENTRE_BOUTEILLE:         #Si elle est supérieur au seuil, on prend en compte comme nouvelle bouteille sinon non
+            print("\n\n\nbouteille proche")
             return True
         else:
             return False
