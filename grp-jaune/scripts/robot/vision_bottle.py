@@ -17,8 +17,8 @@ from cv_bridge import CvBridge
 ################################################## 
 
 # Déclaration constantes
-DEBUG_MODE = False                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
-AFFICHAGE_VIDEO = False                                      #On veut afficher la vidéo ?
+DEBUG_MODE = rospy.get_param("/DEBUG_MODE")                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
+AFFICHAGE_VIDEO = rospy.get_param("/VIDEO_VIEWER_MODE")                                      #On veut afficher la vidéo ?
 ECART_MAX_ENTRE_BOUTEILLE = 0.2                            #L'ecart min pour traduire comme nouvelle bouteille
 MARQUEUR_SCALE = [0.1, 0.1, 0.1]                            #Différent paramètres pour la création de marqueur
 MARQUEUR_COLOR = [0, 255, 0, 255]                           #Comme la couleur vert
@@ -26,7 +26,7 @@ MARQUEUR_TYPE = 1
 
 rospack = rospkg.RosPack()                                  #Ce qui suit sert juste à localiser le fichier cascade.xml
 path_pkg = rospack.get_path('grp-jaune')
-object_cascade = cv2.CascadeClassifier(path_pkg + "/src/data/cascade.xml")
+object_cascade = cv2.CascadeClassifier(path_pkg + "/data/cascade.xml")
 
 
 
