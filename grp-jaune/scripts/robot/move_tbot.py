@@ -2,7 +2,7 @@
 
 
 #On précise les imports
-import math, rospy
+import math, rospy, time
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 
@@ -31,7 +31,7 @@ def debug(info, param, type_debug):
 def move():
     global commandPublisher
     rospy.init_node('move', anonymous=True)
-    commandPublisher = rospy.Publisher('/cmd_vel',Twist, queue_size=10)
+    commandPublisher = rospy.Publisher('/cmd_vel_mux/input/navi',Twist, queue_size=10)
     rospy.Subscriber('/PresenceObs', String, move_command)
     rospy.spin()
 
@@ -39,9 +39,11 @@ def move():
 #On réalise les actions en fonction des données reçues
 def move_command(data):
     cmd = Twist()
+    print(data.data)
     if data.data == "TournerGauche":
         debug("Je tourne sens trigo à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = -VITESSE_ANGULAIRE
+        time.sleep(2000)
     elif data.data == "TournerDroite":
         debug("Je tourne sens horaire à une vitesse de ", VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = VITESSE_ANGULAIRE
