@@ -119,5 +119,5 @@ You have the possibility to see debug messages during the execution of the scrip
 
 - set the value of VIDEO_VIEWER_MODE in the launch file to ``True`` :
 ```xml
-<param name="VIDEO_VIEWER_MODE" type="bool" value="True" />
+<param name="VIDEO_VIEWER_MODE" type="bool" value="False" />
 ```
