@@ -111,13 +111,13 @@ You have the possibility to see debug messages during the execution of the scrip
 
 - set the value of DEBUG_MODE_... in the launch file to ``True`` :
 ```xml
-    <param name="DEBUG_MODE_LISTENER" type="bool" value="False" />           		
-	<param name="DEBUG_MODE_MOVE" type="bool" value="False" />				
-	<param name="DEBUG_MODE_VISION" type="bool" value="False" />
+<param name="DEBUG_MODE_LISTENER" type="bool" value="False" />
+<param name="DEBUG_MODE_MOVE" type="bool" value="False" />
+<param name="DEBUG_MODE_VISION" type="bool" value="False" />
 ```
 2. In the same way, to have **the video display** (robot part) of the camera and the object recognition by rectangle on it (using OpenCV):
 
 - set the value of VIDEO_VIEWER_MODE in the launch file to ``True`` :
 ```xml
-    <param name="VIDEO_VIEWER_MODE" type="bool" value="True" />
+<param name="VIDEO_VIEWER_MODE" type="bool" value="True" />
 ```
