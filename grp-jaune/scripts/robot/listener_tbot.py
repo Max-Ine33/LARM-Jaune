@@ -9,19 +9,19 @@ from std_msgs.msg import String
 
 
 #On déclare les constantes
-INTERVALLE_X = 0.1    #Les points qui sont étudiés se situent sur l'intervalle [0, 0.25] sur l'axe des X
-INTERVALLE_Y = 0.1     #Les points qui sont étudiés se situent sur l'intervalle [0, 0.2] sur l'axe des Y
-DISTANCE_SCAN_MAX = 5.0
+INTERVALLE_X = 0.2    #Les points qui sont étudiés se situent sur l'intervalle [0, 0.25] sur l'axe des X
+INTERVALLE_Y = 0.2     #Les points qui sont étudiés se situent sur l'intervalle [0, 0.2] sur l'axe des Y
+DISTANCE_SCAN_MAX = 4.0
 DISTANCE_SCAN_MIN = 0.1
 DEBUG_MODE = rospy.get_param("/DEBUG_MODE")
 
 
-#On déclare les variables
-commandPublisher = rospy.Publisher('/PresenceObs',String, queue_size=10)
-
 
 #On initialise notre noeud
 rospy.init_node('Interception', anonymous=True)
+
+#On déclare les variables
+commandPublisher = rospy.Publisher('/PresenceObs',String, queue_size=10)
 
 
 #Fonction pour afficher des informations de débogages
@@ -49,18 +49,19 @@ def interpret_scan(data):
             obstacles.append( aPoint )
         angle+= data.angle_increment
     for obs in obstacles:
-        debug("Avancer !", "Alerte")
-        if(obs[0] > 0.0 and obs[0] < INTERVALLE_X):         #si l'obstacle à proximité se situe dans l'intervalle de l'axe X voulut
+        #debug("Avancer !", "Alerte")
+        if(obs[0] > 0.1 and obs[0] < INTERVALLE_X):         #si l'obstacle à proximité se situe dans l'intervalle de l'axe X voulut
             if(obs[1] > -INTERVALLE_Y and obs[1] < 0.0):    #alors, on fait des tests pour savoir si l'élèment se trouve à gauche ou à droite
                 debug("Obstacle à gauche !", "Alerte")
                 msg_envoi = "TournerDroite"               #le robot demande de changer alors de sens 
                 #print("obstacle à gauche, position x:", obs[1], "y =", obs[0])
-            if(obs[1] >= 0.0 and obs[0] < INTERVALLE_Y):
+            elif(obs[1] > 0.0 and obs[1] < INTERVALLE_Y):
+            #else:
                 debug("Obstacle à droite !", "Alerte")
                 msg_envoi = "TournerGauche"  
                 #print("obstacle à droite, position x:", obs[1], "y =", obs[0])
-                      
-    commandPublisher.publish(msg_envoi)       
+            
+        commandPublisher.publish(msg_envoi)       
                 
 rospy.Subscriber('/scan', LaserScan, interpret_scan)
 debug("Lancement du script listener_sim.py", "Debut")
