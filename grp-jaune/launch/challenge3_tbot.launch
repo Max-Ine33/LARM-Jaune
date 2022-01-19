@@ -1,19 +1,39 @@
 <?xml version="1.0"?>
 <launch>
-    <!--Lancement gmapping -->
-  	<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"/>
+	
+	
+	<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+    	<include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch"/>
+    	<node pkg="tf" type="static_transform_publisher" name="base_footprint_in_odom" args="0.0 5.0 0.0 0.8 0.0 0.0 /laser /base_footprint 80" />
+    	<!--<remap from="scan" to="Laser_scan"/>-->
+	<node name="laser" pkg="urg_node" type="urg_node"/>
+	
+	
+
+   	<!--Lancement gmapping -->
+	<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"/>
+	
+	<!--Lancement AMCL -->
+	<!--<include file="$(find turtlebot_navigation_gazebo)/launch/amcl_demo.launch"/>-->
 
 	<!-- Lancement Gazebo-->
-	<include file="$(find larm)/launch/challenge-3.launch"/>
+	<!--<include file="$(find larm)/launch/challenge-3.launch"/>-->
 
 	<!-- Lancement Rviz-->
 	<node pkg="rviz" type="rviz" name="rviz" args=" -d $(find grp-jaune)/rviz/challenge3_tbot.rviz"/>
 
-	<!-- Script de déplacement du robot-->
+	<!-- Script de déplacement autonome du robot-->
 	<node pkg="grp-jaune" name="move" type="move_tbot.py" output="screen"/>
 	<node pkg="grp-jaune" name="listener" type="listener_tbot.py" output="screen"/>
+
+	<!-- Script de détection bouteille-->
+	<!--<node pkg="grp-jaune" name="bottle" type="vision_bottle.py" output="screen"/>-->
+
+	<!-- Script d'info goals du robot-->
+	<!--<node pkg="grp-jaune" name="goal" type="move-to_tbot.py" output="screen"/>-->
 	
 	<!-- Paramètres-->
 	<param name="/use_sim_time" value="true"/>
-	<param name="DEBUG_MODE" type="bool" value="False" />
+	<param name="DEBUG_MODE" type="bool" value="True" />
+	<param name="VIDEO_VIEWER_MODE" type="bool" value="True" />
 </launch>
