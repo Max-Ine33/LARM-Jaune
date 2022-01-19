@@ -7,7 +7,7 @@
 	<include file="$(find larm)/launch/challenge-3.launch"/>
 
 	<!-- Lancement Rviz-->
-	<node pkg="rviz" type="rviz" name="rviz" args=" -d $(find grp-jaune)/rviz/challenge3_tbot.rviz"/>/>
+	<node pkg="rviz" type="rviz" name="rviz" args=" -d $(find grp-jaune)/rviz/challenge3_tbot.rviz"/>
 
 	<!-- Script de déplacement du robot-->
 	<node pkg="grp-jaune" name="move" type="move_tbot.py" output="screen"/>

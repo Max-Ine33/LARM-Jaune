@@ -40,12 +40,12 @@ def move():
 def move_command(data):
     cmd = Twist()
     if data.data == "TournerGauche":
-        debug("Je tourne sens trigo à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
-        print("Je tourne sens trigo à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
+        debug("Je tourne sens horaire à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
+        #print("Je tourne sens horaire à une vitesse de ", -VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = -VITESSE_ANGULAIRE
     elif data.data == "TournerDroite":
-        print("Je tourne sens horaire à une vitesse de ", VITESSE_ANGULAIRE)
-        debug("Je tourne sens horaire à une vitesse de ", VITESSE_ANGULAIRE, "Action")
+        #print("Je tourne sens trigo à une vitesse de ", VITESSE_ANGULAIRE)
+        debug("Je tourne sens trigo à une vitesse de ", VITESSE_ANGULAIRE, "Action")
         cmd.angular.z = VITESSE_ANGULAIRE
     else:
         debug("Je vais tout droit à une vitesse de ", VITESSE_LINEAIRE, "Action")

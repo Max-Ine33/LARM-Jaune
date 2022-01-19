@@ -9,10 +9,10 @@ from std_msgs.msg import String
 
 
 #On déclare les constantes
-INTERVALLE_X = 0.1    #Les points qui sont étudiés se situent sur l'intervalle [0, 0.25] sur l'axe des X
-INTERVALLE_Y = 0.1     #Les points qui sont étudiés se situent sur l'intervalle [0, 0.2] sur l'axe des Y
-DISTANCE_SCAN_MAX = 1.5
-DISTANCE_SCAN_MIN = 0.1
+INTERVALLE_X = 0.0089    #Les points qui sont étudiés se situent sur l'intervalle [0, 0.25] sur l'axe des X
+INTERVALLE_Y = 0.1   #Les points qui sont étudiés se situent sur l'intervalle [0, 0.2] sur l'axe des Y
+DISTANCE_SCAN_MAX = 6
+DISTANCE_SCAN_MIN = 0.01
 DEBUG_MODE = False
 
 
@@ -51,14 +51,16 @@ def interpret_scan(data):
     for obs in obstacles:
         debug("Avancer !", "Alerte")
         if(obs[0] > 0.0 and obs[0] < INTERVALLE_X):         #si l'obstacle à proximité se situe dans l'intervalle de l'axe X voulut
-            if(obs[1] > -INTERVALLE_Y and obs[1] < 0.0):    #alors, on fait des tests pour savoir si l'élèment se trouve à gauche ou à droite
-                debug("Obstacle à gauche !", "Alerte")
-                msg_envoi = "TournerDroite"               #le robot demande de changer alors de sens 
-                print("obstacle à gauche, position x:", obs[1], "y =", obs[0])
-            if(obs[1] >= 0.0 and obs[0] < INTERVALLE_Y):
+            if(obs[1] < INTERVALLE_Y and obs[1] < 0.0):    #alors, on fait des tests pour savoir si l'élèment se trouve à gauche ou à droite
                 debug("Obstacle à droite !", "Alerte")
-                msg_envoi = "TournerGauche"  
-                print("obstacle à droite, position x:", obs[1], "y =", obs[0])
+                msg_envoi = "TournerDroite"               #le robot demande de changer alors de sens 
+                #print("obstacle à droite, position x:", obs[1], "y =", obs[0])
+            else:
+                msg_envoi = "TournerGauche"
+            #if(obs[1] >= 0.0 and obs[1] < INTERVALLE_Y):
+                #debug("Obstacle à gauche !", "Alerte")
+                #msg_envoi = "TournerGauche"  
+                #print("obstacle à gauche, position x:", obs[1], "y =", obs[0])
                       
     commandPublisher.publish(msg_envoi)       
                 

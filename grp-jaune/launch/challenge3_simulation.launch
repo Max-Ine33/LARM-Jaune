@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
 <launch>
 	<include file="$(find larm)/launch/challenge-3.launch"/>
-    
+	<!--Lancement gmapping -->
+  	<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"/>
+	<!-- Lancement Rviz-->
+	<node pkg="rviz" type="rviz" name="rviz" args=" -d $(find grp-jaune)/rviz/challenge3_tbot.rviz"/>
+  	<!-- Script de déplacement du robot-->
 	<node pkg="grp-jaune" name="move" type="move_sim.py" output="screen"/>
 	<node pkg="grp-jaune" name="listener" type="listener_sim.py" output="screen"/>
 	
