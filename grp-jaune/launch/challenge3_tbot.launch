@@ -1,37 +1,42 @@
 <?xml version="1.0"?>
 <launch>
 	
-	
+	<!-- ###### RELATIF AU ROBOT ######-->
+	<!--Lancement du turtlebot avec le laser et la caméra -->
 	<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
-    	<include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch"/>
+    <include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch"/>
 	<node name="Laser" pkg="urg_node" type="urg_node"/>
-    	<node pkg="tf" type="static_transform_publisher" name="base_footprint_in_odom" args="0.15 0.0 0.0 0.0 0.0 1.0 /base_footprint /laser 100" />
-    	<!--<remap from="scan" to="Laser_scan"/>-->
+    
+	<!--On transforme les données du laser vers le base_footprint (pose du robot), décalage 10 cm en x, tout les 100 ms -->
+	<node pkg="tf" type="static_transform_publisher" name="laser_in_base_footprint" args="0.1 0.0 0.0 0.0 0.0 0.0 /base_footprint /laser 100" />
 	
-	
 
-   	<!--Lancement gmapping -->
-	<node pkg="gmapping" type="slam_gmapping" name="slam_gmapping"/>
-	
-	<!--Lancement AMCL -->
-	<!--<include file="$(find turtlebot_navigation_gazebo)/launch/amcl_demo.launch"/>-->
 
-	<!-- Lancement Gazebo-->
-	<!--<include file="$(find larm)/launch/challenge-3.launch"/>-->
+	<!-- ###### RELATIF A LA VISUALISATION D'INFORMATIONS ######-->
+   	<!--Lancement de Gmapping pour publier la map dans le topic /map et connaître la position du robot avec rviz -->
+	<node pkg="gmapping" type="slam_gmapping" name="gmapping"/>
 
-	<!-- Lancement Rviz-->
-	<node pkg="rviz" type="rviz" name="rviz" />
+	<!-- Lancement de Rviz pour voir la map se contruire et les marqueurs des bouteilles-->
+	<node pkg="rviz" type="rviz" name="rviz" args=" -d $(find grp-jaune)/rviz/challenge3_tbot.rviz"/>
 
-	<!-- Script de déplacement autonome du robot-->
+
+
+	<!-- ###### RELATIF AU TRAITEMENT D'INFORMATIONS ######-->
+	<!-- Lancement des scripts pour le déplacement autonome du robot (contournement d'obstacles)-->
 	<node pkg="grp-jaune" name="listener" type="listener_tbot.py" output="screen"/>
 	<node pkg="grp-jaune" name="move" type="move_tbot.py" output="screen"/>
 	
-
-	<!-- Script de détection bouteille-->
+	<!-- Lancement du script des détections des bouteilles par la méthode de Haar, et publication de marqueurs dans le topic /bottle-->
 	<node pkg="grp-jaune" name="bottle" type="vision_bottle.py" output="screen"/>
 
 	
-	<!-- Paramètres-->
-	<param name="DEBUG_MODE" type="bool" value="True" />
+
+	<!-- ###### RELATIF AU PARAMÈTRES ######-->
+	<!-- Affichage d'informations lors du traitement avec le mode debug-->
+	<param name="DEBUG_MODE_LISTENER" type="bool" value="False" />           		<!--Mode debug pour le script de détection d'obstacles-->
+	<param name="DEBUG_MODE_MOVE" type="bool" value="False" />						<!--Mode debug pour le script de d'évitement d'obstacles-->
+	<param name="DEBUG_MODE_VISION" type="bool" value="False" />						<!--Mode debug pour le script de détection de bouteilles-->
+
+	<!-- Affichage simultané de la caméra pour apercevoir la détection des bouteilles (utilise openCV)-->
 	<param name="VIDEO_VIEWER_MODE" type="bool" value="True" />
 </launch>

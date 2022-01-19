@@ -13,7 +13,7 @@ INTERVALLE_X = 0.0089    #Les points qui sont étudiés se situent sur l'interva
 INTERVALLE_Y = 0.1   #Les points qui sont étudiés se situent sur l'intervalle [0, 0.2] sur l'axe des Y
 DISTANCE_SCAN_MAX = 6
 DISTANCE_SCAN_MIN = 0.01
-DEBUG_MODE = False
+DEBUG_MODE = rospy.get_param("/DEBUG_MODE_LISTENER")
 
 
 #On déclare les variables

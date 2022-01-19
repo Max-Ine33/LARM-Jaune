@@ -17,9 +17,9 @@ from cv_bridge import CvBridge
 ################################################## 
 
 # Déclaration constantes
-DEBUG_MODE = rospy.get_param("/DEBUG_MODE")                                           #Un mode debug plus "propre" que le ros log mais avec moins de détails
-AFFICHAGE_VIDEO = rospy.get_param("/VIDEO_VIEWER_MODE")                                      #On veut afficher la vidéo ?
-ECART_MAX_ENTRE_BOUTEILLE = 0.2                            #L'ecart min pour traduire comme nouvelle bouteille
+DEBUG_MODE = rospy.get_param("/DEBUG_MODE_VISION")                 #Un mode debug plus "propre" que le ros log mais avec moins de détails
+AFFICHAGE_VIDEO = rospy.get_param("/VIDEO_VIEWER_MODE")     #On veut afficher la vidéo ?
+ECART_MAX_ENTRE_BOUTEILLE = 0.2                             #L'ecart min pour traduire comme nouvelle bouteille
 MARQUEUR_SCALE = [0.1, 0.1, 0.1]                            #Différent paramètres pour la création de marqueur
 MARQUEUR_COLOR = [0, 255, 0, 255]                           #Comme la couleur vert
 MARQUEUR_TYPE = 1
@@ -28,12 +28,8 @@ rospack = rospkg.RosPack()                                  #Ce qui suit sert ju
 path_pkg = rospack.get_path('grp-jaune')
 object_cascade = cv2.CascadeClassifier(path_pkg + "/data/cascade.xml")
 
-
-
 # Initialisation ROS::node
 rospy.init_node('challenge2', anonymous=True)
-
-
 
 # Déclaration variables
 cam_info = CameraInfo()
@@ -56,8 +52,6 @@ def debug(info, type_debug):
         elif type_debug == "Debut":
             print("\n\n[INITIALISATION] : ", info)       
 
-
-
 ################################################## 
 ###############  PARTIE PERCEPTION ############### 
 ################################################## 
@@ -66,8 +60,7 @@ def perception_color(data):
     # @Paramètre : données recu par le topic /camera/color/image_raw
     # @Valeur retournée : Aucune, on encode puis converti les données à chaque appel, on fait tous les calculs ensuite
     
-    global points_list, objet_precedent, init
-    debug("Detection de couleurs.", "Info")
+    global points_list
     img = bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')                     #On encode les données reçues au format voulu (ici BGR) et on les convertis
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     object = object_cascade.detectMultiScale(gray, 1.5, 25)                       #On lance la detection d'objet via le fichier cascade.xml
@@ -123,7 +116,6 @@ def calcul_distance_en_metres(x, y, w, h):
     # @Paramètres : coordonnées de l'objet reconnu par les rectangles rouges
     # @Valeur retournée : la distance entre l'objet et la caméra 
 
-
     centre_rectangle = depth[y+h//4:y+3*h//4, x+w//4:x+3*w//4]                          #On récupere le centre du rectangle rouge (sur la base de 1/4, 3/4) en prenant la valeur arrondi à l'inférieur (d'où le ..//4 et non /4)
     distance_en_mm = np.median(centre_rectangle)                                        #Pour limiter des valeurs en dehors de l'objet (un mur loin), on prends la médiane du rectangle
     return distance_en_mm / 1000                                                        #La distance étant en milimètres, on travaille en mètres
@@ -150,12 +142,10 @@ def check_proximite(nv_point, points_list):
         diff_x = abs(nv_point[1] - pt.point.x)                                                 #On calcul la différence (en absolue) de la valeurs de x,y,z des points                                              
         diff_y = abs(nv_point[2] - pt.point.y)
         if diff_x <= ECART_MAX_ENTRE_BOUTEILLE or diff_y <= ECART_MAX_ENTRE_BOUTEILLE:         #Si elle est supérieur au seuil, on prend en compte comme nouvelle bouteille sinon non
-            debug("\n\n\nbouteille proche", "Alerte")
+            debug("\n\n\nBouteille proche", "Alerte")
             return True
         else:
             return False
-		
-
 
 ################################################## 
 ############### PARTIE PUBLICATION ############### 
@@ -180,16 +170,16 @@ def function_pub_bouteille(point):
     marker.lifetime = rospy.Duration(0)
     pub_bottle.publish(marker)                                                              #Après avoir mis le marqueur, on publie dans le topic bottle
     nombre_bouteille += 1
+    debug("Marqueur de la bouteille publiée dans /bottle.", "Info")
 
    
     
-debug("\n\n------- Fichier challenge2.py du grp-jaune lancé -------\n\n", "Debut")
+debug("\n\n------- Script vision_bottle.py du grp-jaune lancé -------\n\n", "Debut")
 pub_bottle = rospy.Publisher('/bottle', Marker, queue_size=10)
 
 sub_depth = rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, perception_depth)
 sub_color = rospy.Subscriber("/camera/color/image_raw", Image, perception_color)
 sub_cam = rospy.Subscriber("/camera/color/camera_info", CameraInfo, perception_camera_info)
-#print("==================")
 
 # spin() pour être dans une boucle infinie
 rospy.spin()
