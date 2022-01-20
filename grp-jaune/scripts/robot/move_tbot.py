@@ -9,7 +9,7 @@ from std_msgs.msg import String
 
 #On déclare les constantes
 VITESSE_ANGULAIRE = 0.2     #Cela représente la vitesse de rotation du robot sur lui même
-VITESSE_LINEAIRE = 0.3      #Cela représente la vitesse du robot lorsqu'il va droit devant lui
+VITESSE_LINEAIRE = 0.2      #Cela représente la vitesse du robot lorsqu'il va droit devant lui
 DEBUG_MODE = rospy.get_param("/DEBUG_MODE_MOVE")
 
 #On déclare les variables
