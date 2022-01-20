@@ -77,8 +77,13 @@ source devel/setup.bash
 ```
 
 3. Launch the project :
+For the **robot** :
 ```bash
-roslaunch grp-jaune challenge2.launch
+roslaunch grp-jaune challenge3_tbot.launch
+```
+For the **simulation** :
+```bash
+roslaunch grp-jaune challenge3_simulation.launch
 ```
 
 # How do the scripts work?
