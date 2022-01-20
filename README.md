@@ -76,7 +76,8 @@ catkin_make
 source devel/setup.bash
 ```
 
-3. Launch the project :
+3. Launch the project :  
+
 For the **robot** :
 ```bash
 roslaunch grp-jaune challenge3_tbot.launch
