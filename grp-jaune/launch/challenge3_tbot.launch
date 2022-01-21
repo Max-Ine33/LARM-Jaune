@@ -34,8 +34,8 @@
 	<!-- ###### RELATIF AU PARAMÈTRES ######-->
 	<!-- Affichage d'informations lors du traitement avec le mode debug-->
 	<param name="DEBUG_MODE_LISTENER" type="bool" value="False" />           		<!--Mode debug pour le script de détection d'obstacles-->
-	<param name="DEBUG_MODE_MOVE" type="bool" value="False" />						<!--Mode debug pour le script de d'évitement d'obstacles-->
-	<param name="DEBUG_MODE_VISION" type="bool" value="False" />						<!--Mode debug pour le script de détection de bouteilles-->
+	<param name="DEBUG_MODE_MOVE" type="bool" value="False" />				<!--Mode debug pour le script de d'évitement d'obstacles-->
+	<param name="DEBUG_MODE_VISION" type="bool" value="False" />				<!--Mode debug pour le script de détection de bouteilles-->
 
 	<!-- Affichage simultané de la caméra pour apercevoir la détection des bouteilles (utilise openCV)-->
 	<param name="VIDEO_VIEWER_MODE" type="bool" value="True" />
