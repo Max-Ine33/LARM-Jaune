@@ -4,7 +4,7 @@
 	<!-- ###### RELATIF AU ROBOT ######-->
 	<!--Lancement du turtlebot avec le laser et la caméra -->
 	<include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
-    <include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch"/>
+    	<include file="$(find realsense2_camera)/launch/rs_aligned_depth.launch"/>
 	<node name="Laser" pkg="urg_node" type="urg_node"/>
     
 	<!--On transforme les données du laser vers le base_footprint (pose du robot), décalage 10 cm en x, tout les 100 ms -->
@@ -39,4 +39,5 @@
 
 	<!-- Affichage simultané de la caméra pour apercevoir la détection des bouteilles (utilise openCV)-->
 	<param name="VIDEO_VIEWER_MODE" type="bool" value="True" />
+	
 </launch>
