@@ -3,6 +3,7 @@
 - **Group** : grp-jaune
 - **Name** : Fabien Plouvier and Maxine Gravier
 - **Date** : 13/12/2021 -> 19/01/2022 
+- **Video** : [See here](https://www.youtube.com/watch?v=xlRoSH40MOg)  
 
 📌This directory corresponds to the work done for our Software and Automation for Mobile Robotics course.
   
