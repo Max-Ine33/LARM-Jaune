@@ -1,8 +1,0 @@
-<launch> 
-  <arg name="scan_topic" default="scan" /> 
- 
-<!-- Defining parameters for slam_gmapping node --> 
- 
-  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen"> 
-  </node> 
- </launch> 
